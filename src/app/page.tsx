@@ -31,7 +31,7 @@ export default function HomePage() {
           Streamlining room allocation for educational institutions. Easy, efficient, and fair.
         </p>
         
-        <div className="relative w-full max-w-2xl aspect-video mx-auto rounded-lg overflow-hidden shadow-2xl mt-12">
+        <div className="relative w-full max-w-4xl aspect-video mx-auto rounded-lg overflow-hidden shadow-2xl mt-12">
           <Image 
             src="/slider1.png" 
             alt="Student housing illustration" 
