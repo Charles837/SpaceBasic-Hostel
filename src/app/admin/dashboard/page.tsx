@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import Link from "next/link"; // Added Link import
+import Link from "next/link";
 
 // Placeholder data for recent activity and pending tasks
 const recentActivities = [
