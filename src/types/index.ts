@@ -1,3 +1,4 @@
+
 export interface Room {
   id: string;
   roomNumber: string;
@@ -17,4 +18,12 @@ export interface AllocationRule {
   priority: number; // Lower number means higher priority
   value?: string | number | boolean; // e.g., "Senior", true, 3.5
   isEnabled: boolean;
+}
+
+export interface Announcement {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string; // ISO date string
+  author: string; // For now, just "Admin"
 }

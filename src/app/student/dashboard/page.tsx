@@ -6,9 +6,12 @@ import { QuickActionCard } from "@/components/dashboard/quick-action-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { ListChecks, FileText, Bell, CalendarClock, Home, Info } from "lucide-react";
+import { ListChecks, FileText, Bell, CalendarClock, Home, Info, Megaphone } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from 'react';
+import type { Announcement } from "@/types";
+// A bit of a hack for prototype to get announcements. In a real app, use an API.
+import { getMockAnnouncements } from "@/app/admin/announcements/page"; 
 
 interface DisplayEvent {
   title: string;
@@ -20,6 +23,7 @@ interface DisplayEvent {
 export default function StudentDashboardPage() {
   const [applicationDeadlineDisplay, setApplicationDeadlineDisplay] = useState<string | null>(null);
   const [displayedEvents, setDisplayedEvents] = useState<DisplayEvent[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   // Placeholder data - original static data
   const roomStatus = {
@@ -33,15 +37,23 @@ export default function StudentDashboardPage() {
   ];
 
   useEffect(() => {
-    setApplicationDeadlineDisplay(new Date(applicationDeadlineData).toLocaleDateString());
+    setApplicationDeadlineDisplay(new Date(applicationDeadlineData).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }));
     setDisplayedEvents(
       upcomingEventsData.map(event => ({
         ...event,
-        formattedDate: new Date(event.date).toLocaleDateString(),
+        formattedDate: new Date(event.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }),
       }))
     );
+    // Fetch mock announcements
+    const fetchedAnnouncements = getMockAnnouncements();
+    setAnnouncements(fetchedAnnouncements);
+
   }, []); // Empty dependency array to run once on mount after hydration
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "Loading...";
+    return new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
     <div className="space-y-8">
@@ -76,11 +88,35 @@ export default function StudentDashboardPage() {
         />
         <StatCard 
           title="Notifications" 
-          value="3 Unread" 
+          value={`${announcements.length} Unread`}
           icon={Bell} 
           description="Check your latest updates and messages."
         />
       </div>
+      
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-primary flex items-center gap-2">
+            <Megaphone className="h-6 w-6" />
+            Recent Announcements
+          </CardTitle>
+          <CardDescription>Important updates and information from the administration.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4 max-h-96 overflow-y-auto">
+          {announcements.length > 0 ? (
+            announcements.map((ann) => (
+              <Alert key={ann.id} className="border-l-4 border-primary">
+                <Megaphone className="h-4 w-4 text-primary" />
+                <AlertTitle className="font-semibold text-primary">{ann.title}</AlertTitle>
+                <AlertDescription className="text-sm whitespace-pre-wrap">{ann.content}</AlertDescription>
+                <p className="text-xs text-muted-foreground mt-1">Posted by {ann.author} on {formatDate(ann.createdAt)}</p>
+              </Alert>
+            ))
+          ) : (
+            <p className="text-muted-foreground">No announcements at this time.</p>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
         <QuickActionCard
@@ -95,7 +131,7 @@ export default function StudentDashboardPage() {
           description="Update your personal information and contact details."
           actionText="Go to Profile"
           actionHref="/student/profile"
-          icon={ListChecks} // Changed from User to ListChecks as User icon is already in UserNav
+          icon={ListChecks} 
         />
       </div>
 
