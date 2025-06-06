@@ -1,3 +1,6 @@
+
+"use client";
+
 import { StatCard } from "@/components/dashboard/stat-card";
 import { QuickActionCard } from "@/components/dashboard/quick-action-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -5,18 +8,40 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { ListChecks, FileText, Bell, CalendarClock, Home, Info } from "lucide-react";
 import Image from "next/image";
+import { useState, useEffect } from 'react';
+
+interface DisplayEvent {
+  title: string;
+  date: string;
+  description: string;
+  formattedDate: string | null;
+}
 
 export default function StudentDashboardPage() {
-  // Placeholder data
+  const [applicationDeadlineDisplay, setApplicationDeadlineDisplay] = useState<string | null>(null);
+  const [displayedEvents, setDisplayedEvents] = useState<DisplayEvent[]>([]);
+
+  // Placeholder data - original static data
   const roomStatus = {
     status: "Allocated", // "Not Applied", "Pending", "Allocated"
     roomDetails: "Room A101, North Hall",
   };
-  const applicationDeadline = "2024-08-15";
-  const upcomingEvents = [
+  const applicationDeadlineData = "2024-08-15"; // Keep original data separate
+  const upcomingEventsData = [
     { title: "Move-in Day", date: "2024-09-01", description: "Collect your keys and settle in." },
     { title: "Welcome Orientation", date: "2024-09-02", description: "Meet fellow residents and staff." },
   ];
+
+  useEffect(() => {
+    setApplicationDeadlineDisplay(new Date(applicationDeadlineData).toLocaleDateString());
+    setDisplayedEvents(
+      upcomingEventsData.map(event => ({
+        ...event,
+        formattedDate: new Date(event.date).toLocaleDateString(),
+      }))
+    );
+  }, []); // Empty dependency array to run once on mount after hydration
+
 
   return (
     <div className="space-y-8">
@@ -45,7 +70,7 @@ export default function StudentDashboardPage() {
         />
         <StatCard 
           title="Application Deadline" 
-          value={new Date(applicationDeadline).toLocaleDateString()} 
+          value={applicationDeadlineDisplay || "Loading..."} 
           icon={CalendarClock} 
           description="Ensure your application is submitted on time."
         />
@@ -83,16 +108,16 @@ export default function StudentDashboardPage() {
           <CardDescription>Stay informed about important dates and activities.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {upcomingEvents.length > 0 ? (
-            upcomingEvents.map((event, index) => (
+          {displayedEvents.length > 0 ? (
+            displayedEvents.map((event, index) => (
               <Alert key={index} className="border-l-4 border-accent">
                 <Info className="h-4 w-4 text-accent" />
-                <AlertTitle className="font-semibold text-accent">{event.title} - {new Date(event.date).toLocaleDateString()}</AlertTitle>
+                <AlertTitle className="font-semibold text-accent">{event.title} - {event.formattedDate || "Loading..."}</AlertTitle>
                 <AlertDescription>{event.description}</AlertDescription>
               </Alert>
             ))
           ) : (
-            <p className="text-muted-foreground">No upcoming events or deadlines.</p>
+             applicationDeadlineDisplay === null ? <p className="text-muted-foreground">Loading events...</p> : <p className="text-muted-foreground">No upcoming events or deadlines.</p>
           )}
         </CardContent>
       </Card>

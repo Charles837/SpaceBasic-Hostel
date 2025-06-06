@@ -1,9 +1,19 @@
+
+"use client";
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AppLogo } from '@/components/layout/app-logo';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 export default function HomePage() {
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-background to-secondary/30 p-6">
       <header className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center">
@@ -62,7 +72,7 @@ export default function HomePage() {
       </section>
 
       <footer className="py-8 text-center text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} SafoRoom. All rights reserved.</p>
+        <p>&copy; {currentYear || '...'} SafoRoom. All rights reserved.</p>
       </footer>
     </div>
   );
