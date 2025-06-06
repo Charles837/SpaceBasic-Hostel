@@ -33,7 +33,7 @@ export default function HomePage() {
         
         <div className="relative w-full max-w-2xl aspect-video mx-auto rounded-lg overflow-hidden shadow-2xl mt-12">
           <Image 
-            src="/slider1.jpg" 
+            src="/slider1.png" 
             alt="Student housing illustration" 
             layout="fill"
             objectFit="cover"
