@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,8 +35,8 @@ export function LoginForm() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "student@example.com",
+      password: "password",
       role: "student",
     },
   });
@@ -44,19 +45,31 @@ export function LoginForm() {
     // Placeholder for actual authentication logic
     console.log("Login data:", data);
 
-    toast({
-      title: "Login Successful",
-      description: `Welcome, ${data.role}! Redirecting...`,
-    });
+    // Simulate successful login for provided credentials
+    const isStudentLogin = data.email === "student@example.com" && data.password === "password" && data.role === "student";
+    const isAdminLogin = data.email === "admin@example.com" && data.password === "password" && data.role === "admin";
 
-    // Simulate API call and role-based redirection
-    setTimeout(() => {
-      if (data.role === "student") {
-        router.push("/student/dashboard");
-      } else {
-        router.push("/admin/dashboard");
-      }
-    }, 1000);
+    if (isStudentLogin || isAdminLogin) {
+      toast({
+        title: "Login Successful",
+        description: `Welcome, ${data.role}! Redirecting...`,
+      });
+
+      // Simulate API call and role-based redirection
+      setTimeout(() => {
+        if (data.role === "student") {
+          router.push("/student/dashboard");
+        } else {
+          router.push("/admin/dashboard");
+        }
+      }, 1000);
+    } else {
+      toast({
+        title: "Login Failed",
+        description: "Invalid email, password, or role. Please try again.",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
