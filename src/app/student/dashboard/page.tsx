@@ -5,7 +5,17 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { QuickActionCard } from "@/components/dashboard/quick-action-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription as DialogDesc,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle as DialogHeadTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { ListChecks, FileText, Bell, CalendarClock, Home, Info, Megaphone } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from 'react';
@@ -105,12 +115,38 @@ export default function StudentDashboardPage() {
         <CardContent className="space-y-4 max-h-96 overflow-y-auto">
           {announcements.length > 0 ? (
             announcements.map((ann) => (
-              <Alert key={ann.id} className="border-l-4 border-primary">
-                <Megaphone className="h-4 w-4 text-primary" />
-                <AlertTitle className="font-semibold text-primary">{ann.title}</AlertTitle>
-                <AlertDescription className="text-sm whitespace-pre-wrap">{ann.content}</AlertDescription>
-                <p className="text-xs text-muted-foreground mt-1">Posted by {ann.author} on {formatDate(ann.createdAt)}</p>
-              </Alert>
+              <Dialog key={ann.id}>
+                <DialogTrigger asChild>
+                  <Alert className="border-l-4 border-primary cursor-pointer hover:bg-muted/50 transition-colors">
+                    <Megaphone className="h-4 w-4 text-primary" />
+                    <AlertTitle className="font-semibold text-primary">{ann.title}</AlertTitle>
+                    <AlertDescription className="text-sm">
+                      Click to read the full announcement.
+                    </AlertDescription>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Posted on {formatDate(ann.createdAt).split(',')[0]}
+                    </p>
+                  </Alert>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-lg">
+                  <DialogHeader>
+                    <DialogHeadTitle>{ann.title}</DialogHeadTitle>
+                    <DialogDesc className="text-xs text-muted-foreground pt-1">
+                      Published by {ann.author} on {formatDate(ann.createdAt)}
+                    </DialogDesc>
+                  </DialogHeader>
+                  <div className="py-4 whitespace-pre-wrap text-sm max-h-[60vh] overflow-y-auto">
+                    {ann.content}
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button type="button" variant="outline">
+                        Close
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             ))
           ) : (
             <p className="text-muted-foreground">No announcements at this time.</p>
@@ -161,3 +197,4 @@ export default function StudentDashboardPage() {
     </div>
   );
 }
+
