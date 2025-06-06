@@ -21,7 +21,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger, // Added DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -287,7 +287,10 @@ export function RoomManagementTable() {
               <p><strong>Building:</strong> {viewingRoom.building}, Floor {viewingRoom.floor}</p>
               <p><strong>Type:</strong> {viewingRoom.type}</p>
               <p><strong>Capacity:</strong> {viewingRoom.capacity} person(s)</p>
-              <p><strong>Status:</strong> <Badge variant={statusBadgeVariant(viewingRoom.status)}>{viewingRoom.status}</Badge></p>
+              <div className="flex items-center">
+                <strong className="mr-1">Status:</strong>
+                <Badge variant={statusBadgeVariant(viewingRoom.status)}>{viewingRoom.status}</Badge>
+              </div>
               <p><strong>Rent:</strong> GH₵{viewingRoom.rent.toFixed(2)} / month</p>
               <p><strong>Amenities:</strong> {viewingRoom.amenities.join(', ') || 'None'}</p>
             </div>
@@ -316,7 +319,6 @@ export function RoomManagementTable() {
     </div>
   );
 }
-
     
 
       
