@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { LogIn } from "lucide-react";
 import { AppLogo } from "@/components/layout/app-logo";
+import { findMockUserByEmail } from "@/lib/mock-users"; // Updated import
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -35,29 +36,24 @@ export function LoginForm() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "student@example.com",
+      email: "student@example.com", // Default for easy testing
       password: "password",
       role: "student",
     },
   });
 
   function onSubmit(data: LoginFormValues) {
-    // Placeholder for actual authentication logic
-    console.log("Login data:", data);
+    console.log("Login attempt:", data);
+    const user = findMockUserByEmail(data.email);
 
-    // Simulate successful login for provided credentials
-    const isStudentLogin = data.email === "student@example.com" && data.password === "password" && data.role === "student";
-    const isAdminLogin = data.email === "admin@example.com" && data.password === "password" && data.role === "admin";
-
-    if (isStudentLogin || isAdminLogin) {
+    if (user && user.passwordHash === data.password && user.role === data.role) {
       toast({
         title: "Login Successful",
-        description: `Welcome, ${data.role}! Redirecting...`,
+        description: `Welcome, ${user.fullName || data.role}! Redirecting...`,
       });
 
-      // Simulate API call and role-based redirection
       setTimeout(() => {
-        if (data.role === "student") {
+        if (user.role === "student") {
           router.push("/student/dashboard");
         } else {
           router.push("/admin/dashboard");
@@ -146,3 +142,5 @@ export function LoginForm() {
     </div>
   );
 }
+
+    

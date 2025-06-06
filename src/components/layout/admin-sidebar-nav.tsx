@@ -9,13 +9,14 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, Building, SlidersHorizontal, Users, BarChart3, Megaphone } from "lucide-react";
+import { LayoutDashboard, Building, SlidersHorizontal, Users, BarChart3, Megaphone, UserPlus } from "lucide-react";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/rooms", label: "Room Management", icon: Building },
   { href: "/admin/allocation/configure", label: "Allocation Rules", icon: SlidersHorizontal },
   { href: "/admin/applications", label: "Student Applications", icon: Users },
+  { href: "/admin/manage-students", label: "Manage Students", icon: UserPlus },
   { href: "/admin/announcements", label: "Announcements", icon: Megaphone },
   { href: "/admin/reports", label: "Reports", icon: BarChart3 },
 ];
@@ -45,3 +46,5 @@ export function AdminSidebarNav() {
     </SidebarMenu>
   );
 }
+
+    

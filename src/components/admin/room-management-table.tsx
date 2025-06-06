@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -20,8 +21,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,7 +62,7 @@ function RoomForm({ room: currentRoom, onSave, onClose }: RoomFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!roomNumber || !type || !building || capacity <= 0 || floor <=0 || rent <=0) {
+    if (!roomNumber || !type || !building || capacity <= 0 || floor <=0 || rent < 0) { // Rent can be 0
         toast({ title: "Validation Error", description: "Please fill all required fields with valid values.", variant: "destructive"});
         return;
     }
@@ -121,7 +120,7 @@ function RoomForm({ room: currentRoom, onSave, onClose }: RoomFormProps) {
         </div>
       </div>
       <div>
-        <Label htmlFor="rent">Rent (per month)</Label>
+        <Label htmlFor="rent">Rent (GH₵ per month)</Label>
         <Input id="rent" type="number" value={rent} onChange={(e) => setRent(Number(e.target.value))} required min="0" step="0.01" />
       </div>
       <div>
@@ -185,7 +184,7 @@ export function RoomManagementTable() {
 
   const statusBadgeVariant = (status: Room['status']) => {
     switch (status) {
-      case 'Available': return 'default'; // Will use primary color based on theme
+      case 'Available': return 'default'; 
       case 'Occupied': return 'secondary';
       case 'Maintenance': return 'destructive';
       default: return 'outline';
@@ -250,7 +249,7 @@ export function RoomManagementTable() {
                 <TableCell>
                   <Badge variant={statusBadgeVariant(room.status)}>{room.status}</Badge>
                 </TableCell>
-                <TableCell>${room.rent.toFixed(2)}</TableCell>
+                <TableCell>GH₵{room.rent.toFixed(2)}</TableCell>
                 <TableCell className="text-right space-x-1">
                   <Button variant="ghost" size="icon" onClick={() => setViewingRoom(room)}>
                     <Eye className="h-4 w-4 text-muted-foreground" />
@@ -288,7 +287,7 @@ export function RoomManagementTable() {
               <p><strong>Type:</strong> {viewingRoom.type}</p>
               <p><strong>Capacity:</strong> {viewingRoom.capacity} person(s)</p>
               <p><strong>Status:</strong> <Badge variant={statusBadgeVariant(viewingRoom.status)}>{viewingRoom.status}</Badge></p>
-              <p><strong>Rent:</strong> ${viewingRoom.rent.toFixed(2)} / month</p>
+              <p><strong>Rent:</strong> GH₵{viewingRoom.rent.toFixed(2)} / month</p>
               <p><strong>Amenities:</strong> {viewingRoom.amenities.join(', ') || 'None'}</p>
             </div>
           )}
@@ -316,3 +315,5 @@ export function RoomManagementTable() {
     </div>
   );
 }
+
+    
