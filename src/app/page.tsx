@@ -33,11 +33,10 @@ export default function HomePage() {
         
         <div className="relative w-full max-w-2xl aspect-video mx-auto rounded-lg overflow-hidden shadow-2xl mt-12">
           <Image 
-            src="https://placehold.co/800x450.png" 
+            src="/slider1.jpg" 
             alt="Student housing illustration" 
             layout="fill"
             objectFit="cover"
-            data-ai-hint="modern campus building"
             priority
           />
           <div className="absolute inset-0 bg-primary/30"></div>
