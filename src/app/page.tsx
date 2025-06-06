@@ -23,7 +23,7 @@ export default function HomePage() {
         </Button>
       </header>
 
-      <main className="text-center space-y-8 mt-16">
+      <main className="w-full text-center space-y-8 mt-16">
         <h1 className="text-5xl md:text-6xl font-bold font-headline text-primary">
           Welcome to SafoRoom
         </h1>
