@@ -45,7 +45,7 @@ export default function HomePage() {
 
         <div className="space-x-4 mt-12">
           <Button size="lg" asChild>
-            <Link href="/student/apply">Apply for a Room</Link>
+            <Link href="/login">Apply for a Room</Link>
           </Button>
           <Button size="lg" variant="secondary" asChild>
             <Link href="/#features">Learn More</Link>
