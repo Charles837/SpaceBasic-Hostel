@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { UserCircle, Edit, Mail, Phone, BookOpen, CalendarDays, ShieldAlert, User, Save, X } from "lucide-react";
+import { UserCircle, Edit, Mail, Phone, BookOpen, CalendarDays, ShieldAlert, User, Save, X, UploadCloud } from "lucide-react";
 
 // Mock student data - in a real app, this would come from an API
 const initialStudentProfileData = {
@@ -38,7 +38,7 @@ const profileSchema = z.object({
   phoneNumber: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format."),
   program: z.string().min(2, "Program name is required.").optional(), // Program might not be editable by student
   academicYear: z.string().min(2, "Academic year is required.").optional(), // Academic year might not be editable by student
-  profilePictureUrl: z.string().url("Must be a valid URL for profile picture.").or(z.literal("")).optional(),
+  profilePictureUrl: z.string().url("Must be a valid URL for profile picture.").or(z.literal("")).or(z.string().startsWith("data:image/")).optional(), // Allow data URLs
   emergencyContactName: z.string().min(2, "Emergency contact name is required."),
   emergencyContactRelationship: z.string().min(2, "Emergency contact relationship is required."),
   emergencyContactPhone: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid emergency contact phone number."),
@@ -69,6 +69,7 @@ export default function StudentProfilePage() {
   const { toast } = useToast();
   const [profileData, setProfileData] = React.useState(initialStudentProfileData);
   const [isEditing, setIsEditing] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -89,16 +90,16 @@ export default function StudentProfilePage() {
 
   const handleEditToggle = () => {
     if (isEditing) {
-      form.reset(profileData); // Reset form to current saved data if cancelling
+      form.reset(profileData); 
     } else {
-      form.reset(profileData); // Ensure form is populated with current data when starting edit
+      form.reset(profileData); 
     }
     setIsEditing(!isEditing);
   };
 
   const onSubmit = (data: ProfileFormValues) => {
     console.log("Updated profile data:", data);
-    setProfileData(data); // Simulate API call and update local state
+    setProfileData(data); 
     setIsEditing(false);
     toast({
       title: "Profile Updated",
@@ -119,6 +120,18 @@ export default function StudentProfilePage() {
     }
   };
 
+  const handleProfilePictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        form.setValue("profilePictureUrl", reader.result as string, { shouldValidate: true });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const watchedProfilePictureUrl = form.watch("profilePictureUrl");
 
   return (
     <div className="space-y-8">
@@ -135,15 +148,43 @@ export default function StudentProfilePage() {
           <Card className="shadow-xl border-border">
             <CardHeader className="bg-card-foreground/5 dark:bg-card-foreground/10 p-6">
               <div className="flex flex-col sm:flex-row items-center gap-6">
-                <Avatar className="h-24 w-24 border-2 border-primary shadow-md">
-                  <AvatarImage src={form.watch("profilePictureUrl") || profileData.profilePictureUrl} alt={profileData.fullName} data-ai-hint="user avatar person" />
-                  <AvatarFallback className="text-3xl">{getInitials(profileData.fullName)}</AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                    <Avatar className="h-24 w-24 border-2 border-primary shadow-md">
+                    <AvatarImage 
+                        src={watchedProfilePictureUrl || profileData.profilePictureUrl} 
+                        alt={profileData.fullName} 
+                        data-ai-hint="user avatar person"
+                    />
+                    <AvatarFallback className="text-3xl">{getInitials(profileData.fullName)}</AvatarFallback>
+                    </Avatar>
+                    {isEditing && (
+                    <Button 
+                        type="button"
+                        size="sm" 
+                        variant="outline"
+                        className="absolute -bottom-2 -right-2 bg-background hover:bg-muted"
+                        onClick={() => fileInputRef.current?.click()}
+                        title="Change profile picture"
+                    >
+                        <UploadCloud className="h-4 w-4" />
+                    </Button>
+                    )}
+                </div>
+
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleProfilePictureChange}
+                    accept="image/*"
+                    className="hidden"
+                />
+                
                 <div className="text-center sm:text-left">
-                  <CardTitle className="text-2xl text-primary">{profileData.fullName}</CardTitle>
+                  <CardTitle className="text-2xl text-primary">{isEditing ? form.watch("fullName") : profileData.fullName}</CardTitle>
                   <CardDescription className="text-base text-muted-foreground">{profileData.studentId}</CardDescription>
                   <p className="text-sm text-accent">{profileData.program} - {profileData.academicYear}</p>
                 </div>
+
                 <div className="sm:ml-auto mt-4 sm:mt-0 flex gap-2">
                   {isEditing ? (
                     <>
@@ -161,19 +202,6 @@ export default function StudentProfilePage() {
                   )}
                 </div>
               </div>
-              {isEditing && (
-                <FormField
-                    control={form.control}
-                    name="profilePictureUrl"
-                    render={({ field }) => (
-                        <FormItem className="mt-4">
-                        <FormLabel>Profile Picture URL</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/image.png" {...field} /></FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                 />
-              )}
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <div>
@@ -330,7 +358,7 @@ export default function StudentProfilePage() {
             <CardFooter className="p-6 border-t">
                 <p className="text-xs text-muted-foreground">
                     {isEditing 
-                        ? "Make your changes and click 'Save Changes'." 
+                        ? "Make your changes and click 'Save Changes'. To change your profile picture, click the upload icon on the image." 
                         : 'To update your information, please click the "Edit Profile" button. Ensure all details are accurate and up-to-date.'
                     }
                 </p>
@@ -341,5 +369,3 @@ export default function StudentProfilePage() {
     </div>
   );
 }
-
-    
