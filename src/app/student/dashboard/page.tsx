@@ -42,8 +42,8 @@ export default function StudentDashboardPage() {
   };
   const applicationDeadlineData = "2024-08-15"; // Keep original data separate
   const upcomingEventsData = [
-    { title: "Move-in Day", date: "2024-09-01", description: "Collect your keys and settle in." },
-    { title: "Welcome Orientation", date: "2024-09-02", description: "Meet fellow residents and staff." },
+    { title: "Move-in Day", date: "2024-09-01", description: "Collect your keys and settle in. Ensure you arrive between 9 AM and 5 PM at the main hall." },
+    { title: "Welcome Orientation", date: "2024-09-02", description: "Meet fellow residents and staff. Mandatory attendance for all new students. Event starts at 10 AM in the auditorium." },
   ];
 
   useEffect(() => {
@@ -182,11 +182,35 @@ export default function StudentDashboardPage() {
         <CardContent className="space-y-4">
           {displayedEvents.length > 0 ? (
             displayedEvents.map((event, index) => (
-              <Alert key={index} className="border-l-4 border-accent">
-                <Info className="h-4 w-4 text-accent" />
-                <AlertTitle className="font-semibold text-accent">{event.title} - {event.formattedDate || "Loading..."}</AlertTitle>
-                <AlertDescription>{event.description}</AlertDescription>
-              </Alert>
+              <Dialog key={index}>
+                <DialogTrigger asChild>
+                  <Alert className="border-l-4 border-accent cursor-pointer hover:bg-muted/50 transition-colors">
+                    <Info className="h-4 w-4 text-accent" />
+                    <AlertTitle className="font-semibold text-accent">{event.title}</AlertTitle>
+                    <AlertDescription className="text-sm">
+                      {event.formattedDate || "Loading..."} - Click for details.
+                    </AlertDescription>
+                  </Alert>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogHeadTitle>{event.title}</DialogHeadTitle>
+                    <DialogDesc className="text-xs text-muted-foreground pt-1">
+                      Date: {event.formattedDate || "Loading..."}
+                    </DialogDesc>
+                  </DialogHeader>
+                  <div className="py-4 whitespace-pre-wrap text-sm max-h-[60vh] overflow-y-auto">
+                    {event.description}
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button type="button" variant="outline">
+                        Close
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             ))
           ) : (
              applicationDeadlineDisplay === null ? <p className="text-muted-foreground">Loading events...</p> : <p className="text-muted-foreground">No upcoming events or deadlines.</p>
