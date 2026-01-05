@@ -1,0 +1,50 @@
+[
+  {
+    "id": "523a8e1f-79ee-47f5-b04c-cc435926998b",
+    "status": "rejected",
+    "createdAt": "2025-12-03T22:11:44.205Z",
+    "fullName": "enock kyei",
+    "studentId": "S45678",
+    "email": "Enockkyei361@gmail.com",
+    "phoneNumber": "+233535346254",
+    "preferredRoomType": "double_shared_bath",
+    "academicYear": "Freshman",
+    "agreeToTerms": true
+  },
+  {
+    "id": "ea4b1b68-df2a-48df-8b40-f93807c6e569",
+    "status": "rejected",
+    "createdAt": "2025-11-18T12:54:32.876Z",
+    "fullName": "Dan Boat",
+    "studentId": "S11111",
+    "email": "danielboatrng876@gmail.com",
+    "phoneNumber": "+233500688094",
+    "preferredRoomType": "suite",
+    "academicYear": "Freshman",
+    "agreeToTerms": true
+  },
+  {
+    "id": "3c662b15-987e-4e45-854b-1f0b5b27d35b",
+    "status": "approved",
+    "createdAt": "2025-11-18T12:26:20.204Z",
+    "fullName": "Mary joo",
+    "studentId": "S55667788",
+    "email": "Maryjoo@gmail.com",
+    "phoneNumber": "+2330599562719",
+    "preferredRoomType": "suite",
+    "academicYear": "Freshman",
+    "agreeToTerms": true
+  },
+  {
+    "id": "b2fd5be5-82a0-45cf-a8df-e835a6986454",
+    "status": "approved",
+    "createdAt": "2025-11-18T12:04:10.221Z",
+    "fullName": "henry kofi",
+    "studentId": "S22334455",
+    "email": "henrykofi@gmail.com",
+    "phoneNumber": "+233206637070",
+    "preferredRoomType": "double_shared_bath",
+    "academicYear": "Graduate",
+    "agreeToTerms": true
+  }
+]

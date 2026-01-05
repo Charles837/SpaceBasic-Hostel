@@ -59,13 +59,33 @@ export function RoomApplicationForm() {
   });
 
   function onSubmit(data: ApplicationFormValues) {
-    console.log("Application data:", data);
-    toast({
-      title: "Application Submitted!",
-      description: "Your room application has been received. We will review it shortly.",
-      variant: "default", 
-    });
-    form.reset();
+    return (async () => {
+      try {
+        const res = await fetch('/api/applications', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || 'Failed to submit application');
+        }
+
+        toast({
+          title: 'Application Submitted!',
+          description: 'Your room application has been received. We will review it shortly.',
+          variant: 'default',
+        });
+        form.reset();
+      } catch (err: any) {
+        toast({
+          title: 'Submission failed',
+          description: err?.message ?? 'Unable to submit application',
+          variant: 'destructive',
+        });
+      }
+    })();
   }
 
   return (
